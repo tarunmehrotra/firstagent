@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+pydantic
+pydantic-settings
+pinecone
+openai
+pypdf
+python-docx
+tiktoken
+python-multipart
+groq
