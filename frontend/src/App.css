@@ -1,6 +1,6 @@
 /* =========================================================
    GLOBAL
-   ========================================================= */
+========================================================= */
 
 * {
   box-sizing: border-box;
@@ -18,14 +18,21 @@
 
   color: #e8edf7;
   background: #070b14;
+
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
 
-body {
+html,
+body,
+#root {
   margin: 0;
+  width: 100%;
   min-width: 320px;
   min-height: 100vh;
+}
+
+body {
   background:
     radial-gradient(
       circle at 15% 15%,
@@ -43,24 +50,28 @@ body {
 
 /* =========================================================
    MAIN APP
-   ========================================================= */
+========================================================= */
 
 .app {
   min-height: 100vh;
+
   display: flex;
   justify-content: center;
+
   padding: 18px;
 }
 
 
 /* =========================================================
    CHAT CONTAINER
-   ========================================================= */
+========================================================= */
 
 .chat-container {
   width: 100%;
   max-width: 1180px;
-  min-height: calc(100vh - 36px);
+
+  height: calc(100vh - 36px);
+  min-height: 600px;
 
   display: flex;
   flex-direction: column;
@@ -86,19 +97,22 @@ body {
 
 /* =========================================================
    HEADER
-   ========================================================= */
+========================================================= */
 
 .header {
   height: 78px;
+  min-height: 78px;
 
   display: flex;
   align-items: center;
 
   padding: 0 28px;
 
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  border-bottom:
+    1px solid rgba(148, 163, 184, 0.1);
 
-  background: rgba(10, 15, 27, 0.75);
+  background:
+    rgba(10, 15, 27, 0.75);
 
   backdrop-filter: blur(18px);
 
@@ -116,18 +130,19 @@ body {
 
   height: 1px;
 
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(99, 102, 241, 0.5),
-    transparent
-  );
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(99, 102, 241, 0.5),
+      transparent
+    );
 }
 
 
 /* =========================================================
    LOGO
-   ========================================================= */
+========================================================= */
 
 .logo {
   width: 44px;
@@ -168,13 +183,14 @@ body {
 
   border-radius: 13px;
 
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border:
+    1px solid rgba(255, 255, 255, 0.18);
 }
 
 
 /* =========================================================
    HEADER TEXT
-   ========================================================= */
+========================================================= */
 
 .header h1 {
   margin: 0;
@@ -198,7 +214,7 @@ body {
 
 /* =========================================================
    ONLINE STATUS
-   ========================================================= */
+========================================================= */
 
 .header::before {
   content: "●  ONLINE";
@@ -220,10 +236,12 @@ body {
 
 /* =========================================================
    CHAT AREA
-   ========================================================= */
+========================================================= */
 
 .chat-area {
   flex: 1;
+
+  min-height: 0;
 
   padding: 42px 42px;
 
@@ -262,7 +280,7 @@ body {
 
 /* =========================================================
    WELCOME SCREEN
-   ========================================================= */
+========================================================= */
 
 .welcome {
   max-width: 650px;
@@ -295,7 +313,8 @@ body {
       rgba(139, 92, 246, 0.08)
     );
 
-  border: 1px solid rgba(129, 140, 248, 0.15);
+  border:
+    1px solid rgba(129, 140, 248, 0.15);
 
   box-shadow:
     0 20px 50px rgba(79, 70, 229, 0.1);
@@ -326,10 +345,12 @@ body {
 
 /* =========================================================
    MESSAGES
-   ========================================================= */
+========================================================= */
 
 .message {
   display: flex;
+
+  align-items: flex-start;
 
   gap: 12px;
 
@@ -349,7 +370,7 @@ body {
 
 /* =========================================================
    AVATARS
-   ========================================================= */
+========================================================= */
 
 .avatar {
   flex-shrink: 0;
@@ -363,7 +384,7 @@ body {
 
   border-radius: 12px;
 
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
 }
 
@@ -373,7 +394,8 @@ body {
   background:
     rgba(99, 102, 241, 0.14);
 
-  border: 1px solid rgba(129, 140, 248, 0.16);
+  border:
+    1px solid rgba(129, 140, 248, 0.16);
 }
 
 .assistant-avatar {
@@ -393,7 +415,7 @@ body {
 
 /* =========================================================
    MESSAGE CONTENT
-   ========================================================= */
+========================================================= */
 
 .message-content {
   padding: 14px 17px;
@@ -405,16 +427,22 @@ body {
   line-height: 1.7;
 
   max-width: 100%;
+
+  overflow-wrap: anywhere;
 }
 
 .message-content p {
   margin: 0;
 
   white-space: pre-wrap;
+
+  word-break: break-word;
 }
 
 
-/* User */
+/* =========================================================
+   USER MESSAGE
+========================================================= */
 
 .user-message .message-content {
   color: #eef2ff;
@@ -426,7 +454,8 @@ body {
       rgba(99, 102, 241, 0.58)
     );
 
-  border: 1px solid rgba(129, 140, 248, 0.2);
+  border:
+    1px solid rgba(129, 140, 248, 0.2);
 
   border-top-right-radius: 5px;
 
@@ -435,7 +464,9 @@ body {
 }
 
 
-/* Assistant */
+/* =========================================================
+   ASSISTANT MESSAGE
+========================================================= */
 
 .assistant-message .message-content {
   color: #d9e1ee;
@@ -443,7 +474,8 @@ body {
   background:
     rgba(30, 41, 59, 0.62);
 
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  border:
+    1px solid rgba(148, 163, 184, 0.1);
 
   border-top-left-radius: 5px;
 
@@ -453,8 +485,8 @@ body {
 
 
 /* =========================================================
-   TYPING
-   ========================================================= */
+   TYPING INDICATOR
+========================================================= */
 
 .typing {
   display: flex;
@@ -474,7 +506,8 @@ body {
 
   background: #818cf8;
 
-  animation: typing 1.2s infinite ease-in-out;
+  animation:
+    typing 1.2s infinite ease-in-out;
 }
 
 .typing span:nth-child(2) {
@@ -487,13 +520,14 @@ body {
 
 
 /* =========================================================
-   INPUT AREA
-   ========================================================= */
+   INPUT SECTION
+========================================================= */
 
 .input-section {
   padding: 20px 30px 22px;
 
-  border-top: 1px solid rgba(148, 163, 184, 0.08);
+  border-top:
+    1px solid rgba(148, 163, 184, 0.08);
 
   background:
     rgba(8, 13, 24, 0.82);
@@ -504,7 +538,7 @@ body {
 
 /* =========================================================
    INPUT BOX
-   ========================================================= */
+========================================================= */
 
 .input-wrapper {
   display: flex;
@@ -524,7 +558,8 @@ body {
   background:
     rgba(20, 27, 45, 0.85);
 
-  border: 1px solid rgba(148, 163, 184, 0.15);
+  border:
+    1px solid rgba(148, 163, 184, 0.15);
 
   box-shadow:
     0 12px 35px rgba(0, 0, 0, 0.2);
@@ -535,7 +570,8 @@ body {
 }
 
 .input-wrapper:focus-within {
-  border-color: rgba(99, 102, 241, 0.65);
+  border-color:
+    rgba(99, 102, 241, 0.65);
 
   box-shadow:
     0 0 0 3px rgba(99, 102, 241, 0.08),
@@ -545,7 +581,7 @@ body {
 
 /* =========================================================
    TEXTAREA
-   ========================================================= */
+========================================================= */
 
 textarea {
   flex: 1;
@@ -575,10 +611,16 @@ textarea::placeholder {
   color: #68758a;
 }
 
+textarea:disabled {
+  opacity: 0.6;
+
+  cursor: not-allowed;
+}
+
 
 /* =========================================================
    ASK BUTTON
-   ========================================================= */
+========================================================= */
 
 .ask-button {
   min-width: 72px;
@@ -633,8 +675,43 @@ textarea::placeholder {
 
 
 /* =========================================================
+   CLEAR CONVERSATION
+========================================================= */
+
+.clear-button {
+  display: block;
+
+  margin: 10px auto 0;
+
+  padding: 5px 10px;
+
+  border: none;
+
+  background: transparent;
+
+  color: #68758a;
+
+  font-family: inherit;
+
+  font-size: 11px;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.clear-button:hover {
+  color: #a5b4fc;
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================================================
    HINT
-   ========================================================= */
+========================================================= */
 
 .hint {
   margin: 9px 0 0;
@@ -651,7 +728,7 @@ textarea::placeholder {
 
 /* =========================================================
    ANIMATIONS
-   ========================================================= */
+========================================================= */
 
 @keyframes typing {
   0%,
@@ -700,7 +777,7 @@ textarea::placeholder {
 
 /* =========================================================
    RESPONSIVE
-   ========================================================= */
+========================================================= */
 
 @media (max-width: 700px) {
 
@@ -709,6 +786,8 @@ textarea::placeholder {
   }
 
   .chat-container {
+    height: 100vh;
+
     min-height: 100vh;
 
     border-radius: 0;
@@ -770,5 +849,14 @@ textarea::placeholder {
 
   .ask-button {
     min-width: 60px;
+  }
+
+  .avatar {
+    width: 34px;
+    height: 34px;
+
+    border-radius: 10px;
+
+    font-size: 9px;
   }
 }

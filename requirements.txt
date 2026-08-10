@@ -10,3 +10,5 @@ python-docx
 tiktoken
 python-multipart
 groq
+sqlalchemy
+pyodbc
