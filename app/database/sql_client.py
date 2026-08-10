@@ -6,14 +6,16 @@ from app.config.settings import settings
 
 def get_sql_engine():
 
+    
     connection_string = (
         "DRIVER={ODBC Driver 18 for SQL Server};"
         f"SERVER={settings.sql_server};"
         f"DATABASE={settings.sql_database};"
-        f"UID={settings.sql_username};"
-        f"PWD={settings.sql_password};"
+        "Trusted_Connection=yes;"
         "TrustServerCertificate=yes;"
     )
+
+
 
     connection_url = (
         "mssql+pyodbc:///?odbc_connect="

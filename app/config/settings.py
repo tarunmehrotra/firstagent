@@ -10,8 +10,6 @@ class Settings(BaseSettings):
 
     sql_server: str
     sql_database: str
-    sql_username: str
-    sql_password: str
 
     model_config = SettingsConfigDict(
         env_file=".env",
