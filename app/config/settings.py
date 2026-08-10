@@ -7,6 +7,12 @@ class Settings(BaseSettings):
     pinecone_index_name: str
     pinecone_namespace: str = "ragproject"
 
+
+    sql_server: str
+    sql_database: str
+    sql_username: str
+    sql_password: str
+
     model_config = SettingsConfigDict(
         env_file=".env",
         extra="ignore"
