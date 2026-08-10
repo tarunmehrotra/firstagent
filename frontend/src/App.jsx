@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
 
@@ -5,10 +6,11 @@ function App() {
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [mode, setMode] = useState("pdf");
 
   const chatAreaRef = useRef(null);
 
-  // Scroll to the latest message
+  // Scroll to latest message
   useEffect(() => {
     if (chatAreaRef.current) {
       chatAreaRef.current.scrollTop =
@@ -41,12 +43,13 @@ function App() {
       return;
     }
 
-    // Add user's question
+    // Add user message
     setMessages((prevMessages) => [
       ...prevMessages,
       {
         role: "user",
         content: currentQuestion,
+        source: mode,
       },
     ]);
 
@@ -54,39 +57,98 @@ function App() {
     setLoading(true);
 
     try {
+      // Select backend endpoint
+      const endpoint =
+        mode === "sql"
+          ? "http://127.0.0.1:8000/ask-sql"
+          : "http://127.0.0.1:8000/ask";
+
+      console.log("Using endpoint:", endpoint);
+
       const response = await fetch(
-        `http://127.0.0.1:8000/ask?question=${encodeURIComponent(
+        `${endpoint}?question=${encodeURIComponent(
           currentQuestion
         )}`
       );
 
-      if (!response.ok) {
-        throw new Error(
-          `HTTP error: ${response.status}`
+      let data = {};
+
+      try {
+        data = await response.json();
+      } catch (jsonError) {
+        console.error(
+          "Could not parse backend response:",
+          jsonError
         );
       }
 
-      const data = await response.json();
+      console.log("Backend response:", data);
 
-      // Add assistant answer
+      // Handle HTTP errors
+      if (!response.ok) {
+        const errorMessage =
+          data.error ||
+          data.detail ||
+          `Backend error: HTTP ${response.status}`;
+
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            role: "assistant",
+            content: `❌ ${errorMessage}`,
+          },
+        ]);
+
+        return;
+      }
+
+      // Get answer
+      let answer = data.answer;
+
+      // Handle object or array
+      if (
+        typeof answer === "object" &&
+        answer !== null
+      ) {
+        answer = JSON.stringify(
+          answer,
+          null,
+          2
+        );
+      }
+
+      // Handle missing answer
+      if (
+        answer === undefined ||
+        answer === null ||
+        answer === ""
+      ) {
+        answer =
+          data.error ||
+          "No answer received from backend.";
+      }
+
+      // Add assistant response
       setMessages((prevMessages) => [
         ...prevMessages,
         {
           role: "assistant",
-          content:
-            data.answer ||
-            "No answer received from backend.",
+          content: String(answer),
+          source: mode,
         },
       ]);
     } catch (error) {
-      console.error(error);
+      console.error(
+        "Backend connection error:",
+        error
+      );
 
       setMessages((prevMessages) => [
         ...prevMessages,
         {
           role: "assistant",
           content:
-            "Unable to get an answer from the backend.",
+            "❌ Unable to connect to the backend. Please make sure FastAPI is running.",
         },
       ]);
     } finally {
@@ -94,6 +156,8 @@ function App() {
     }
   };
 
+  // Enter = send
+  // Shift + Enter = new line
   const handleKeyDown = (e) => {
     if (
       e.key === "Enter" &&
@@ -126,77 +190,76 @@ function App() {
             <h1>RAG Assistant</h1>
 
             <p>
-              Ask questions about your documents
+              Ask questions from documents or SQL Server
             </p>
           </div>
 
         </header>
 
-
-        {/* CHAT */}
+        {/* CHAT AREA */}
         <main
           className="chat-area"
           ref={chatAreaRef}
         >
 
-          {/* Welcome */}
-          {messages.length === 0 && !loading && (
-            <div className="welcome">
+          {/* WELCOME */}
+          {messages.length === 0 &&
+            !loading && (
+              <div className="welcome">
 
-              <div className="welcome-icon">
-                ✨
-              </div>
+                <div className="welcome-icon">
+                  ✨
+                </div>
 
-              <h2>
-                How can I help you?
-              </h2>
-
-              <p>
-                Ask a question and I'll search
-                your documents to find the
-                relevant answer.
-              </p>
-
-            </div>
-          )}
-
-
-          {/* ALL MESSAGES */}
-          {messages.map((message, index) => (
-
-            <div
-              key={index}
-              className={`message ${
-                message.role === "user"
-                  ? "user-message"
-                  : "assistant-message"
-              }`}
-            >
-
-              <div
-                className={`avatar ${
-                  message.role === "user"
-                    ? "user-avatar"
-                    : "assistant-avatar"
-                }`}
-              >
-                {message.role === "user"
-                  ? "You"
-                  : "R"}
-              </div>
-
-              <div className="message-content">
+                <h2>
+                  How can I help you?
+                </h2>
 
                 <p>
-                  {message.content}
+                  Select Documents or SQL Server
+                  and ask your question.
                 </p>
 
               </div>
+            )}
 
-            </div>
+          {/* MESSAGES */}
+          {messages.map(
+            (message, index) => (
+              <div
+                key={index}
+                className={`message ${
+                  message.role === "user"
+                    ? "user-message"
+                    : "assistant-message"
+                }`}
+              >
 
-          ))}
+                <div
+                  className={`avatar ${
+                    message.role === "user"
+                      ? "user-avatar"
+                      : "assistant-avatar"
+                  }`}
+                >
+                  {message.role === "user"
+                    ? "You"
+                    : "R"}
+                </div>
 
+                <div className="message-content">
+
+                  <p>
+                    {String(
+                      message.content
+                    )}
+                  </p>
+
+                </div>
+
+              </div>
+            )
+          )}
 
           {/* LOADING */}
           {loading && (
@@ -209,11 +272,9 @@ function App() {
               <div className="message-content">
 
                 <div className="typing">
-
                   <span></span>
                   <span></span>
                   <span></span>
-
                 </div>
 
               </div>
@@ -223,10 +284,41 @@ function App() {
 
         </main>
 
-
-        {/* INPUT */}
+        {/* INPUT SECTION */}
         <div className="input-section">
 
+          {/* SOURCE SELECTOR */}
+          <div className="mode-selector">
+
+            <button
+              type="button"
+              className={
+                mode === "pdf"
+                  ? "mode-button active"
+                  : "mode-button"
+              }
+              onClick={() => setMode("pdf")}
+              disabled={loading}
+            >
+              📄 Documents
+            </button>
+
+            <button
+              type="button"
+              className={
+                mode === "sql"
+                  ? "mode-button active"
+                  : "mode-button"
+              }
+              onClick={() => setMode("sql")}
+              disabled={loading}
+            >
+              🗄️ SQL Server
+            </button>
+
+          </div>
+
+          {/* INPUT */}
           <div className="input-wrapper">
 
             <textarea
@@ -235,12 +327,17 @@ function App() {
                 setQuestion(e.target.value)
               }
               onKeyDown={handleKeyDown}
-              placeholder="Ask a question..."
+              placeholder={
+                mode === "sql"
+                  ? "Ask about your SQL data..."
+                  : "Ask about your documents..."
+              }
               rows="1"
               disabled={loading}
             />
 
             <button
+              type="button"
               onClick={askQuestion}
               disabled={
                 loading ||
@@ -253,17 +350,16 @@ function App() {
 
           </div>
 
-
-          {/* CLEAR BUTTON */}
+          {/* CLEAR CONVERSATION */}
           {messages.length > 0 && (
             <button
+              type="button"
               onClick={clearChat}
               className="clear-button"
             >
               Clear conversation
             </button>
           )}
-
 
           <p className="hint">
             Press Enter to ask • Shift + Enter
