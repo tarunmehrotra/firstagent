@@ -1,7 +1,7 @@
 from app.database.schema import get_database_schema
 from app.database.validator import validate_sql
 from app.database.sql_client import execute_query
-from app.llm.groq_llm import generate_sql
+from app.llm.groq_llm import generate_sql_answer,generate_sql
 
 
 def format_schema(schema):
@@ -37,7 +37,6 @@ def create_sql_query(question: str):
 
     return validated_query
 
-
 def execute_sql_question(question: str):
 
     sql_query = create_sql_query(question)
@@ -47,4 +46,39 @@ def execute_sql_question(question: str):
 
     result = execute_query(sql_query)
 
-    return result
+    print("\nQuery Result:")
+    print(result)
+
+    answer = generate_sql_answer(
+        question=question,
+        sql_query=sql_query,
+        result=result
+    )
+
+    print("\nFinal Answer:")
+    print(answer)
+
+    return answer
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
